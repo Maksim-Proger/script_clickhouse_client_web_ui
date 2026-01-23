@@ -127,7 +127,7 @@ async function requestDG() {
 async function requestCH() {
     try {
         const sqlQuery = encodeURIComponent("SELECT * FROM my_table LIMIT 10");
-        const response = await fetch(`http://127.0.0.1:8000/ch/read?query=${sqlQuery}`);
+        const response = await fetch(`http://192.168.100.113:8000/ch/read?query=${sqlQuery}`);
         const data = await response.json();
 
         const screen = document.querySelector(".data-screen");
