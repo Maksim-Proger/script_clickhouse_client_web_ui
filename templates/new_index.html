@@ -126,17 +126,21 @@ async function requestDG() {
 }
 async function requestCH() {
     try {
-        const sqlQuery = encodeURIComponent("SELECT * FROM my_table LIMIT 10");
-        const response = await fetch(`http://192.168.100.113:8000/ch/read?query=${sqlQuery}`);
+        // Правильная база и таблица
+        const sqlQuery = encodeURIComponent("SELECT * FROM feedgen.blocked_ips LIMIT 10");
+
+        const response = await fetch(`http://113.113.113.113:8000/ch/read?query=${sqlQuery}`);
         const data = await response.json();
 
         const screen = document.querySelector(".data-screen");
-        screen.innerHTML = "<h3>Результаты из ClickHouse</h3><pre>" + JSON.stringify(data, null, 2) + "</pre>";
+        screen.innerHTML =
+            "<h3>Результаты из ClickHouse</h3><pre>" +
+            JSON.stringify(data, null, 2) +
+            "</pre>";
     } catch (e) {
         alert("Ошибка запроса CH: " + e.message);
     }
 }
-
 </script>
 
 </body>
