@@ -80,7 +80,7 @@
 
         <button class="action" onclick="requestDG()">Получить данные из DG</button>
         <button class="action" onclick="document.getElementById('uploadDialog').showModal()">Добавить данные</button>
-        <button class="action">Чтение данных из CH</button>
+        <button class="action" onclick="requestCH()">Чтение данных из CH</button>
         <button class="action" onclick="document.getElementById('exportDialog').showModal()">Экспорт данных</button>
     </div>
 
@@ -124,6 +124,19 @@ async function requestDG() {
         alert("Ошибка запроса");
     }
 }
+async function requestCH() {
+    try {
+        const sqlQuery = encodeURIComponent("SELECT * FROM my_table LIMIT 10");
+        const response = await fetch(`http://127.0.0.1:8000/ch/read?query=${sqlQuery}`);
+        const data = await response.json();
+
+        const screen = document.querySelector(".data-screen");
+        screen.innerHTML = "<h3>Результаты из ClickHouse</h3><pre>" + JSON.stringify(data, null, 2) + "</pre>";
+    } catch (e) {
+        alert("Ошибка запроса CH: " + e.message);
+    }
+}
+
 </script>
 
 </body>
