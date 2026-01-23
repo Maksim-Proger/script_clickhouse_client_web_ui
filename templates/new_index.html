@@ -53,12 +53,14 @@
 
         .data-screen {
             width: 100%;
-            height: 100%;
+            min-height: 200px; /* добавляем минимальную высоту */
             border: 1px solid #aaa;
             background-color: #f9f9f9;
             padding: 15px;
             box-sizing: border-box;
+            overflow: auto; /* на всякий случай */
         }
+
 
         /* Модальные окна */
         dialog {
@@ -127,22 +129,19 @@ async function requestDG() {
 async function requestCH() {
     try {
         const sqlQuery = encodeURIComponent("SELECT * FROM feedgen.blocked_ips LIMIT 10");
-
         const response = await fetch(`http://192.168.100.113:8000/ch/read?query=${sqlQuery}`);
         const result = await response.json();
 
-        const rows = result.data; // берем именно массив с записями
+        console.log(result); // <- обязательно вывод в консоль для проверки
+
+        const rows = result.data;
         if (!rows || rows.length === 0) {
             document.querySelector(".data-screen").innerHTML = "<p>Данные отсутствуют</p>";
             return;
         }
 
-        // Строим простой текстовый вывод
-        let html = "<h3>Результаты из ClickHouse</h3><ul>";
-        rows.forEach(row => {
-            html += `<li>${row.blocked_at} | ${row.ip_address} | ${row.source} | ${row.profile} | ${row.created_at}</li>`;
-        });
-        html += "</ul>";
+        let html = "<h3>Результаты из ClickHouse</h3>";
+        html += "<pre>" + JSON.stringify(rows, null, 2) + "</pre>";
 
         document.querySelector(".data-screen").innerHTML = html;
 
