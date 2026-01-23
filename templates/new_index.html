@@ -129,17 +129,28 @@ async function requestCH() {
         const sqlQuery = encodeURIComponent("SELECT * FROM feedgen.blocked_ips LIMIT 10");
 
         const response = await fetch(`http://192.168.100.113:8000/ch/read?query=${sqlQuery}`);
-        const data = await response.json();
+        const result = await response.json();
 
-        const screen = document.querySelector(".data-screen");
-        screen.innerHTML =
-            "<h3>Результаты из ClickHouse</h3><pre>" +
-            JSON.stringify(data, null, 2) +
-            "</pre>";
+        const rows = result.data; // берем именно массив с записями
+        if (!rows || rows.length === 0) {
+            document.querySelector(".data-screen").innerHTML = "<p>Данные отсутствуют</p>";
+            return;
+        }
+
+        // Строим простой текстовый вывод
+        let html = "<h3>Результаты из ClickHouse</h3><ul>";
+        rows.forEach(row => {
+            html += `<li>${row.blocked_at} | ${row.ip_address} | ${row.source} | ${row.profile} | ${row.created_at}</li>`;
+        });
+        html += "</ul>";
+
+        document.querySelector(".data-screen").innerHTML = html;
+
     } catch (e) {
         alert("Ошибка запроса CH: " + e.message);
     }
 }
+
 </script>
 
 </body>
