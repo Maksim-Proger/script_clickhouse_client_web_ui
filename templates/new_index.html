@@ -53,14 +53,12 @@
 
         .data-screen {
             width: 100%;
-            min-height: 200px; /* добавляем минимальную высоту */
+            height: 100%;
             border: 1px solid #aaa;
             background-color: #f9f9f9;
             padding: 15px;
             box-sizing: border-box;
-            overflow: auto; /* на всякий случай */
         }
-
 
         /* Модальные окна */
         dialog {
@@ -132,16 +130,19 @@ async function requestCH() {
         const response = await fetch(`http://192.168.100.113:8000/ch/read?query=${sqlQuery}`);
         const result = await response.json();
 
-        console.log(result); // <- обязательно вывод в консоль для проверки
-
+        console.log(result);
         const rows = result.data;
+
         if (!rows || rows.length === 0) {
             document.querySelector(".data-screen").innerHTML = "<p>Данные отсутствуют</p>";
             return;
         }
 
-        let html = "<h3>Результаты из ClickHouse</h3>";
-        html += "<pre>" + JSON.stringify(rows, null, 2) + "</pre>";
+        let html = "<h3>Результаты из ClickHouse</h3><ul>";
+        rows.forEach(row => {
+            html += `<li>${row.blocked_at} | ${row.ip_address} | ${row.source} | ${row.profile} | ${row.created_at}</li>`;
+        });
+        html += "</ul>";
 
         document.querySelector(".data-screen").innerHTML = html;
 
@@ -149,7 +150,6 @@ async function requestCH() {
         alert("Ошибка запроса CH: " + e.message);
     }
 }
-
 </script>
 
 </body>
