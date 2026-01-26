@@ -58,6 +58,7 @@
             background-color: #f9f9f9;
             padding: 15px;
             box-sizing: border-box;
+            overflow: auto; /* добавляем скролл */
         }
 
         /* Модальные окна */
@@ -126,30 +127,53 @@ async function requestDG() {
 }
 async function requestCH() {
     try {
-        const sqlQuery = encodeURIComponent("SELECT * FROM feedgen.blocked_ips LIMIT 10");
-        const response = await fetch(`http://192.168.100.113:8000/ch/read?query=${sqlQuery}`);
+        const sqlQuery = encodeURIComponent("SELECT * FROM feedgen.blocked_ips ORDER BY blocked_at DESC");
+        const response = await fetch(`http://192.168.100.113:8000/ch/read?query=${sqlQuery}&_ts=${Date.now()}`);
         const result = await response.json();
 
-        console.log(result);
         const rows = result.data;
+        const container = document.getElementById("data-list");
 
         if (!rows || rows.length === 0) {
-            document.querySelector(".data-screen").innerHTML = "<p>Данные отсутствуют</p>";
+            container.innerHTML = "<p>Данные отсутствуют</p>";
             return;
         }
 
-        let html = "<h3>Результаты из ClickHouse</h3><ul>";
-        rows.forEach(row => {
-            html += `<li>${row.blocked_at} | ${row.ip_address} | ${row.source} | ${row.profile} | ${row.created_at}</li>`;
-        });
-        html += "</ul>";
+        let html = `
+            <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+                <thead>
+                    <tr>
+                        <th>blocked_at</th>
+                        <th>ip_address</th>
+                        <th>source</th>
+                        <th>profile</th>
+                        <th>created_at</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
 
-        document.querySelector(".data-screen").innerHTML = html;
+        rows.forEach(row => {
+            html += `
+                <tr>
+                    <td>${row.blocked_at}</td>
+                    <td>${row.ip_address}</td>
+                    <td>${row.source}</td>
+                    <td>${row.profile}</td>
+                    <td>${row.created_at}</td>
+                </tr>
+            `;
+        });
+
+        html += "</tbody></table>";
+
+        container.innerHTML = html;
 
     } catch (e) {
         alert("Ошибка запроса CH: " + e.message);
     }
 }
+
 </script>
 
 </body>
