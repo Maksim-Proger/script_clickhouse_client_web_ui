@@ -3,73 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>DG Control</title>
-
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            height: 100vh;
-        }
-
-        .app {
-            display: flex;
-            height: 100%;
-        }
-
-        /* Левая панель */
-        .sidebar {
-            width: 260px;
-            padding: 20px;
-            border-right: 1px solid #ccc;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .profile-button {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background-color: #444;
-            color: white;
-            border: none;
-            cursor: pointer;
-            margin-bottom: 30px;
-            font-size: 18px;
-        }
-
-        .sidebar button.action {
-            margin-bottom: 12px;
-            padding: 10px;
-            cursor: pointer;
-        }
-
-        /* Основная область */
-        .content {
-            flex: 1;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-
-        .data-screen {
-            width: 100%;
-            height: 100%;
-            border: 1px solid #aaa;
-            background-color: #f9f9f9;
-            padding: 15px;
-            box-sizing: border-box;
-            overflow: auto; /* добавляем скролл */
-        }
-
-        /* Модальные окна */
-        dialog {
-            padding: 20px;
-        }
-
-        dialog button {
-            margin-top: 10px;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css"> <!-- Вынесенный CSS -->
 </head>
 <body>
 
@@ -79,10 +13,10 @@
     <div class="sidebar">
         <button class="profile-button">👤</button>
 
-        <button class="action" onclick="requestDG()">Получить данные из DG</button>
-        <button class="action" onclick="document.getElementById('uploadDialog').showModal()">Добавить данные</button>
-        <button class="action" onclick="requestCH()">Чтение данных из CH</button>
-        <button class="action" onclick="document.getElementById('exportDialog').showModal()">Экспорт данных</button>
+        <button class="action" id="btnDG">Получить данные из DG</button>
+        <button class="action" id="btnUpload">Добавить данные</button>
+        <button class="action" id="btnCH">Чтение данных из CH</button>
+        <button class="action" id="btnExport">Экспорт данных</button>
     </div>
 
     <!-- Правая часть -->
@@ -90,12 +24,13 @@
         <div class="data-screen">
             <h3>Область отображения данных</h3>
             <p>Здесь в дальнейшем будут отображаться данные из базы.</p>
+            <div id="data-list"></div> <!-- Контейнер для CH данных -->
         </div>
     </div>
 
 </div>
 
-<!-- Диалог загрузки файла -->
+<!-- Диалоги -->
 <dialog id="uploadDialog">
     <h3>Загрузка файла</h3>
     <input type="file">
@@ -103,78 +38,14 @@
     <button onclick="this.closest('dialog').close()">Закрыть</button>
 </dialog>
 
-<!-- Диалог экспорта -->
 <dialog id="exportDialog">
     <h3>Экспорт данных</h3>
-    <label>
-        <input type="radio" name="exportFormat"> PDF
-    </label><br>
-    <label>
-        <input type="radio" name="exportFormat"> Word
-    </label><br>
+    <label><input type="radio" name="exportFormat"> PDF</label><br>
+    <label><input type="radio" name="exportFormat"> Word</label><br>
     <button onclick="this.closest('dialog').close()">Закрыть</button>
 </dialog>
 
-<script>
-async function requestDG() {
-    try {
-        const response = await fetch('http://192.168.100.113:8000/dg/request');
-        const data = await response.json();
-        alert(JSON.stringify(data));
-    } catch (e) {
-        alert("Ошибка запроса");
-    }
-}
-async function requestCH() {
-    try {
-        const sqlQuery = encodeURIComponent("SELECT * FROM feedgen.blocked_ips ORDER BY blocked_at DESC");
-        const response = await fetch(`http://192.168.100.113:8000/ch/read?query=${sqlQuery}&_ts=${Date.now()}`);
-        const result = await response.json();
-
-        const rows = result.data;
-        const container = document.getElementById("data-list");
-
-        if (!rows || rows.length === 0) {
-            container.innerHTML = "<p>Данные отсутствуют</p>";
-            return;
-        }
-
-        let html = `
-            <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%;">
-                <thead>
-                    <tr>
-                        <th>blocked_at</th>
-                        <th>ip_address</th>
-                        <th>source</th>
-                        <th>profile</th>
-                        <th>created_at</th>
-                    </tr>
-                </thead>
-                <tbody>
-        `;
-
-        rows.forEach(row => {
-            html += `
-                <tr>
-                    <td>${row.blocked_at}</td>
-                    <td>${row.ip_address}</td>
-                    <td>${row.source}</td>
-                    <td>${row.profile}</td>
-                    <td>${row.created_at}</td>
-                </tr>
-            `;
-        });
-
-        html += "</tbody></table>";
-
-        container.innerHTML = html;
-
-    } catch (e) {
-        alert("Ошибка запроса CH: " + e.message);
-    }
-}
-
-</script>
+<script src="script.js"></script> <!-- Вынесенный JS -->
 
 </body>
 </html>

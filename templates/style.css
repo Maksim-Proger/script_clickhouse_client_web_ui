@@ -1,0 +1,93 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    height: 100vh;
+}
+
+.app {
+    display: flex;
+    height: 100%;
+}
+
+/* Левая панель */
+.sidebar {
+    width: 260px;
+    padding: 20px;
+    border-right: 1px solid #ccc;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-button {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #444;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin-bottom: 30px;
+    font-size: 18px;
+}
+
+.sidebar button.action {
+    margin-bottom: 12px;
+    padding: 10px;
+    cursor: pointer;
+}
+
+/* Основная область */
+.content {
+    flex: 1;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.data-screen {
+    width: 100%;
+    height: 100%;
+    border: 1px solid #aaa;
+    background-color: #f9f9f9;
+    padding: 15px;
+    box-sizing: border-box;
+    overflow: auto; /* скролл */
+    max-height: 80vh; /* ограничение высоты для прокрутки */
+}
+
+/* Модальные окна */
+dialog {
+    padding: 20px;
+}
+
+dialog button {
+    margin-top: 10px;
+}
+
+/* Стили для таблицы CH данных */
+#data-list table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+#data-list th, #data-list td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+}
+
+#data-list thead {
+    background-color: #f0f0f0;
+    position: sticky; /* фиксируем заголовок при скролле */
+    top: 0;
+    z-index: 1;
+}
+
+#data-list tbody tr:nth-child(even) {
+    background-color: #fafafa; /* чередующиеся строки */
+}
+
+#data-list tbody tr:hover {
+    background-color: #e0f7fa; /* подсветка при наведении */
+}
