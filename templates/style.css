@@ -9,7 +9,7 @@ body {
     height: 100%;
 }
 
-/* Левая панель */
+/* Левая часть */
 .sidebar {
     width: 260px;
     padding: 20px;
@@ -51,11 +51,10 @@ body {
     background-color: #f9f9f9;
     padding: 15px;
     box-sizing: border-box;
-    overflow: auto; /* скролл */
-    max-height: 80vh; /* ограничение высоты для прокрутки */
+    overflow: auto;
+    max-height: 80vh;
 }
 
-/* Модальные окна */
 dialog {
     padding: 20px;
 }
@@ -85,7 +84,7 @@ dialog button {
 }
 
 #data-list tbody tr:nth-child(even) {
-    background-color: #fafafa; /* чередующиеся строки */
+    background-color: #fafafa;
 }
 
 #data-list tbody tr:hover {

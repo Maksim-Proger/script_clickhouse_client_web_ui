@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => { // Ждем загрузк
     const btnExport = document.getElementById("btnExport");
     const uploadDialog = document.getElementById("uploadDialog");
     const exportDialog = document.getElementById("exportDialog");
-    const container = document.getElementById("data-list"); // Контейнер для CH данных
+    const container = document.getElementById("data-list");
 
     btnDG.addEventListener("click", requestDG);
     btnCH.addEventListener("click", requestCH);
@@ -64,7 +64,6 @@ document.addEventListener("DOMContentLoaded", () => { // Ждем загрузк
 
             html += "</tbody></table>";
 
-            // Плавное появление таблицы
             container.innerHTML = "";
             const tempDiv = document.createElement("div");
             tempDiv.innerHTML = html;
