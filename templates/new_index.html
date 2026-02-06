@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>DG Control</title>
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.full.min.js"></script>
+</head>
+<body>
+
+<main class="login-page">
+    <section class="login-card" aria-label="Окно авторизации">
+        <div class="login-logo" aria-hidden="true">
+            <span>Место для логотипа</span>
+        </div>
+        <form class="login-form">
+            <label class="login-field">
+                <span>Логин</span>
+                <input type="text" name="login" placeholder="Введите логин" autocomplete="username" required>
+            </label>
+            <label class="login-field">
+                <span>Пароль</span>
+                <input type="password" name="password" placeholder="Введите пароль" autocomplete="current-password" required>
+            </label>
+            <button type="submit" class="login-button">Вход</button>
+        </form>
+    </section>
+</main>
+
+<div class="app">
+    <!-- Левая часть -->
+    <div class="sidebar">
+        <button class="profile-button">👤</button>
+        <button class="action" id="btnCH">Чтение данных из CH</button>
+        <button class="action" id="btnDG">Получить данные из DG</button>
+        <button class="action" id="btnUpload">Добавить данные</button>
+        <button class="action" id="btnExport">Экспорт данных</button>
+    </div>
+
+    <!-- Правая часть -->
+    <div class="content">
+        <div class="data-screen">
+            <div id="data-list"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Диалоги -->
+<dialog id="uploadDialog">
+    <h3>Загрузка файла</h3>
+    <input type="file" id="fileInput" accept=".xlsx">
+    <br>
+    <button onclick="this.closest('dialog').close()">Закрыть</button>
+    <button id="btnUploadFile">Загрузить</button>
+</dialog>
+
+<dialog id="exportDialog">
+    <h3>Экспорт данных</h3>
+    <label><input type="radio" name="exportFormat" value="xlsx" checked> XLSX</label><br>
+    <button onclick="exportData()">Экспортировать</button>
+    <button onclick="this.closest('dialog').close()">Закрыть</button>
+</dialog>
+
+<script src="./script.js"></script>
+
+</body>
+</html>
