@@ -73,14 +73,14 @@
     <div class="dialog-content">
         <h3>Экспорт</h3>
         <p>Выберите формат выгрузки.</p>
-        <div class="format-options">
+        <div class="format-options" style="margin-bottom: 15px;">
             <label class="radio-option">
                 <input type="radio" name="exportFormat" value="xlsx" checked>
                 <span>XLSX (Excel)</span>
             </label>
         </div>
         <div class="dialog-actions">
-            <button class="secondary-button" onclick="this.closest('dialog').close()">Закрыть</button>
+            <button class="secondary-button" onclick="this.closest('dialog').close()">Отмена</button>
             <button class="primary-button" onclick="exportData()">Экспорт</button>
         </div>
     </div>
