@@ -10,35 +10,44 @@
 <body>
 
 <main class="login-page">
-    <section class="login-card" aria-label="Окно авторизации">
-        <div class="login-logo" aria-hidden="true">
-            <span>Место для логотипа</span>
+    <section class="login-card">
+        <div class="login-logo">
+            <span>DG CONTROL</span>
         </div>
         <form class="login-form">
             <label class="login-field">
                 <span>Логин</span>
-                <input type="text" name="login" placeholder="Введите логин" autocomplete="username" required>
+                <input type="text" name="login" placeholder="admin" required>
             </label>
             <label class="login-field">
                 <span>Пароль</span>
-                <input type="password" name="password" placeholder="Введите пароль" autocomplete="current-password" required>
+                <input type="password" name="password" placeholder="admin" required>
             </label>
             <button type="submit" class="login-button">Вход</button>
         </form>
     </section>
 </main>
 
-<div class="app">
-    <!-- Левая часть -->
+<div class="app is-hidden">
     <div class="sidebar">
-        <button class="profile-button">👤</button>
+        <div class="profile-container">
+            <button class="profile-button" id="profileBtn">👤</button>
+            <div class="profile-menu is-hidden" id="profileMenu">
+                <div class="profile-info">
+                    <span class="profile-label">Логин:</span>
+                    <span class="profile-value" id="currentUser">admin</span>
+                </div>
+                <hr class="menu-divider">
+                <button class="logout-button" id="btnLogout">Выйти</button>
+            </div>
+        </div>
+
         <button class="action" id="btnCH">Чтение данных из CH</button>
         <button class="action" id="btnDG">Получить данные из DG</button>
         <button class="action" id="btnUpload">Добавить данные</button>
         <button class="action" id="btnExport">Экспорт данных</button>
     </div>
 
-    <!-- Правая часть -->
     <div class="content">
         <div class="data-screen">
             <div id="data-list"></div>
@@ -46,20 +55,35 @@
     </div>
 </div>
 
-<!-- Диалоги -->
-<dialog id="uploadDialog">
-    <h3>Загрузка файла</h3>
-    <input type="file" id="fileInput" accept=".xlsx">
-    <br>
-    <button onclick="this.closest('dialog').close()">Закрыть</button>
-    <button id="btnUploadFile">Загрузить</button>
+<dialog id="uploadDialog" class="modern-dialog">
+    <div class="dialog-content">
+        <h3>Загрузка файла</h3>
+        <p>Выберите XLSX файл для импорта.</p>
+        <div class="file-upload-wrapper">
+            <input type="file" id="fileInput" accept=".xlsx">
+        </div>
+        <div class="dialog-actions">
+            <button class="secondary-button" onclick="this.closest('dialog').close()">Отмена</button>
+            <button class="primary-button" id="btnUploadFile">Загрузить</button>
+        </div>
+    </div>
 </dialog>
 
-<dialog id="exportDialog">
-    <h3>Экспорт данных</h3>
-    <label><input type="radio" name="exportFormat" value="xlsx" checked> XLSX</label><br>
-    <button onclick="exportData()">Экспортировать</button>
-    <button onclick="this.closest('dialog').close()">Закрыть</button>
+<dialog id="exportDialog" class="modern-dialog">
+    <div class="dialog-content">
+        <h3>Экспорт</h3>
+        <p>Выберите формат выгрузки.</p>
+        <div class="format-options">
+            <label class="radio-option">
+                <input type="radio" name="exportFormat" value="xlsx" checked>
+                <span>XLSX (Excel)</span>
+            </label>
+        </div>
+        <div class="dialog-actions">
+            <button class="secondary-button" onclick="this.closest('dialog').close()">Закрыть</button>
+            <button class="primary-button" onclick="exportData()">Экспорт</button>
+        </div>
+    </div>
 </dialog>
 
 <script src="./script.js"></script>

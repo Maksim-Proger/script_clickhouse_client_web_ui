@@ -1,170 +1,135 @@
+* { box-sizing: border-box; }
+
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     height: 100vh;
     background-color: #f3f5f8;
+    overflow: hidden; /* Запрещаем скролл самого экрана */
 }
+
+.is-hidden { display: none !important; }
 
 .app {
     display: flex;
-    height: 100%;
+    height: 100vh;
+    width: 100vw;
 }
 
+/* ЛОГИН */
 .login-page {
-    min-height: 100vh;
+    height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 40px 20px;
 }
 
 .login-card {
-    width: min(420px, 100%);
-    background-color: #fff;
+    width: 380px;
+    background: #fff;
     border-radius: 16px;
-    box-shadow: 0 12px 24px rgba(30, 42, 62, 0.12);
-    padding: 32px;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    padding: 30px;
 }
 
 .login-logo {
-    height: 140px;
+    height: 100px;
+    background: #f8f9fa;
+    border: 2px dashed #dce1e7;
     border-radius: 12px;
-    border: 2px dashed #b7c3d0;
-    color: #7a8699;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 14px;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    background-color: #f7f9fc;
+    margin-bottom: 25px;
+    color: #a0aec0;
+    font-weight: bold;
 }
 
-.login-form {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
+.login-form { display: flex; flex-direction: column; gap: 15px; }
+.login-field { display: flex; flex-direction: column; gap: 5px; font-size: 14px; }
+.login-field input { padding: 10px; border: 1px solid #cfd6e0; border-radius: 8px; outline: none; }
+.login-button { padding: 12px; background: #4a6cf7; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; }
 
-.login-field {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    font-size: 14px;
-    color: #2e3642;
-}
-
-.login-field input {
-    border: 1px solid #cfd6e0;
-    border-radius: 10px;
-    padding: 10px 12px;
-    font-size: 14px;
-    outline: none;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.login-field input:focus {
-    border-color: #4a6cf7;
-    box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.2);
-}
-
-.login-button {
-    border: none;
-    border-radius: 10px;
-    padding: 12px 16px;
-    background-color: #4a6cf7;
-    color: #fff;
-    font-size: 15px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-
-.login-button:hover {
-    background-color: #3655d4;
-}
-
-/* Левая часть */
+/* САЙДБАР */
 .sidebar {
     width: 260px;
+    min-width: 260px;
+    background: #fff;
+    border-right: 1px solid #e2e8f0;
     padding: 20px;
-    border-right: 1px solid #ccc;
-    box-sizing: border-box;
     display: flex;
     flex-direction: column;
 }
 
 .profile-button {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background-color: #444;
-    color: white;
-    border: none;
-    cursor: pointer;
-    margin-bottom: 30px;
-    font-size: 18px;
+    width: 45px; height: 45px; border-radius: 50%; background: #2d3748;
+    color: white; border: none; cursor: pointer; margin-bottom: 25px;
 }
 
 .sidebar button.action {
-    margin-bottom: 12px;
-    padding: 10px;
-    cursor: pointer;
+    padding: 12px; margin-bottom: 10px; background: #f8fafc;
+    border: 1px solid #e2e8f0; border-radius: 8px; text-align: left;
+    cursor: pointer; font-weight: 500; transition: 0.2s;
 }
+.sidebar button.action:hover { background: #4a6cf7; color: white; }
 
-/* Основная область */
+/* КОНТЕНТ И ПОЛЕ ДАННЫХ */
 .content {
     flex: 1;
-    padding: 20px;
-    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    padding: 15px; /* Те самые отступы по 15px */
+    height: 100vh;
 }
 
 .data-screen {
-    width: 100%;
-    height: 100%;
-    border: 1px solid #aaa;
-    background-color: #f9f9f9;
-    padding: 15px;
-    box-sizing: border-box;
-    overflow: auto;
-    max-height: 80vh;
+    flex: 1;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    overflow: auto; /* Скролл только тут */
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
 }
 
-dialog {
-    padding: 20px;
+#data-list { padding: 0; width: 100%; }
+
+table { width: 100%; border-collapse: collapse; min-width: 600px; }
+th { position: sticky; top: 0; background: #f8fafc; z-index: 10; padding: 12px; border-bottom: 2px solid #e2e8f0; text-align: left; font-size: 13px; color: #64748b; }
+td { padding: 12px; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
+
+/* ДИАЛОГИ (Исправлено) */
+.modern-dialog {
+    border: none;
+    border-radius: 16px;
+    padding: 0;
+    width: fit-content; /* Окно по размеру содержимого */
+    max-width: 90vw;
+    box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
 }
 
-dialog button {
-    margin-top: 10px;
+.modern-dialog::backdrop { background: rgba(0,0,0,0.4); backdrop-filter: blur(2px); }
+
+.dialog-content {
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    min-width: 320px;
 }
 
-/* Стили для таблицы CH данных */
-#data-list table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 14px;
-}
+.dialog-content h3 { margin: 0 0 10px 0; }
+.dialog-content p { color: #64748b; font-size: 14px; margin-bottom: 20px; }
 
-#data-list th, #data-list td {
-    border: 1px solid #ccc;
-    padding: 8px;
-    text-align: left;
-}
+.file-upload-wrapper { margin-bottom: 20px; }
+.file-upload-wrapper input { width: 100%; }
 
-#data-list thead {
-    background-color: #f0f0f0;
-    position: sticky; /* фиксируем заголовок при скролле */
-    top: 0;
-    z-index: 1;
-}
+.dialog-actions { display: flex; justify-content: flex-end; gap: 10px; }
+.primary-button { padding: 10px 20px; background: #4a6cf7; color: white; border: none; border-radius: 8px; cursor: pointer; }
+.secondary-button { padding: 10px 20px; background: #f1f5f9; color: #475569; border: none; border-radius: 8px; cursor: pointer; }
 
-#data-list tbody tr:nth-child(even) {
-    background-color: #fafafa;
+/* МЕНЮ ПРОФИЛЯ */
+.profile-menu {
+    position: absolute; top: 70px; left: 20px; width: 180px;
+    background: #fff; border-radius: 8px; box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+    padding: 15px; z-index: 100; border: 1px solid #e2e8f0;
 }
-
-#data-list tbody tr:hover {
-    background-color: #e0f7fa; /* подсветка при наведении */
-}
+.logout-button { width: 100%; background: #fee2e2; color: #dc2626; border: none; padding: 8px; border-radius: 6px; cursor: pointer; margin-top: 10px; }
