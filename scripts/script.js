@@ -1,4 +1,5 @@
-import * as Auth from './auth.js'; // Импортируем auth.js
+// script.js
+import * as Auth from './auth.js';
 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -10,21 +11,25 @@ document.addEventListener("DOMContentLoaded", () => {
     const profileMenu = document.getElementById("profileMenu");
     const btnLogout = document.getElementById("btnLogout");
     const currentUserSpan = document.getElementById("currentUser");
+
+    // Диалоги
     const uploadDialog = document.getElementById("uploadDialog");
     const exportDialog = document.getElementById("exportDialog");
+    const filterDialog = document.getElementById("filterDialog"); // Новый диалог
+
     const container = document.getElementById("data-list");
     const fileInput = document.getElementById("fileInput");
+
+    // Кнопки действий в диалогах
     const btnUploadFile = document.getElementById("btnUploadFile");
     const btnConfirmExport = document.querySelector("#exportDialog .primary-button");
+    const btnApplyFilters = document.getElementById("btnApplyFilters"); // Кнопка в фильтрах
 
     let exportedData = [];
 
     // --- ИНИЦИАЛИЗАЦИЯ ---
-
-    // Говорим модулю Auth: "Если токен протух, запусти функцию showLogin"
     Auth.setSessionExpiredHandler(showLogin);
 
-    // Проверка старта
     if (Auth.isAuthenticated()) {
         showApp();
     } else {
@@ -32,11 +37,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // --- УПРАВЛЕНИЕ ИНТЕРФЕЙСОМ ---
-
     function showApp() {
         loginPage.classList.add("is-hidden");
         appRoot.classList.remove("is-hidden");
-        // Берем имя пользователя из модуля
         currentUserSpan.textContent = Auth.getCurrentLogin();
     }
 
@@ -47,14 +50,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // --- ОБРАБОТЧИКИ СОБЫТИЙ ---
-
     loginForm.addEventListener("submit", async (e) => {
         e.preventDefault();
         const login = loginForm.elements["login"].value.trim();
         const password = loginForm.elements["password"].value;
-
         try {
-            // Вызываем логин из модуля
             const success = await Auth.login(login, password);
             if (success) {
                 showApp();
@@ -78,20 +78,37 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // --- БИЗНЕС-ЛОГИКА (ЗАПРОСЫ) ---
 
+    // Функция запроса к ClickHouse с учетом фильтров
     async function requestCH() {
         try {
             container.innerHTML = "<p style='padding:20px'>Загрузка...</p>";
-            const sql = encodeURIComponent("SELECT * FROM feedgen.blocked_ips ORDER BY blocked_at DESC");
 
-            // Используем Auth.API_BASE и Auth.authFetch
-            const url = `${Auth.API_BASE}/ch/read?query=${sql}`;
+            // 1. Собираем значения из полей фильтрации
+            const fDate = document.getElementById("filterDate").value;
+            const fIP = document.getElementById("filterIP").value.trim();
+            const fSource = document.getElementById("filterSource").value;
+            const fProfile = document.getElementById("filterProfile").value.trim();
+
+            // 2. Формируем массив условий для WHERE
+            let conditions = [];
+            if (fDate) conditions.push(`toDate(blocked_at) = '${fDate}'`);
+            if (fIP) conditions.push(`ip_address = '${fIP}'`);
+            if (fSource) conditions.push(`source = '${fSource}'`);
+            if (fProfile) conditions.push(`profile = '${fProfile}'`);
+
+            // 3. Собираем финальный SQL
+            const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : "";
+            const sqlQuery = `SELECT * FROM feedgen.blocked_ips ${whereClause} ORDER BY blocked_at DESC LIMIT 500`;
+
+            const encodedSql = encodeURIComponent(sqlQuery);
+            const url = `${Auth.API_BASE}/ch/read?query=${encodedSql}`;
 
             const response = await Auth.authFetch(url);
             const result = await response.json();
 
             exportedData = result.data || result;
 
-            if (!Array.isArray(exportedData)) throw new Error("Некорректный ответ");
+            if (!Array.isArray(exportedData)) throw new Error("Некорректный ответ сервера");
 
             renderTable(exportedData);
         } catch (e) {
@@ -103,12 +120,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function renderTable(data) {
         if (!data.length) {
-            container.innerHTML = "<p style='padding:20px'>Нет данных</p>";
+            container.innerHTML = "<p style='padding:20px'>Данные не найдены по заданным фильтрам</p>";
             return;
         }
         const headers = Object.keys(data[0]);
         let html = `<table><thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>`;
-
         data.forEach(row => {
             html += `<tr>${headers.map(key => `<td>${row[key] ?? ''}</td>`).join('')}</tr>`;
         });
@@ -117,9 +133,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     async function requestDG() {
         try {
-            // Используем Auth.API_BASE
             const response = await Auth.authFetch(`${Auth.API_BASE}/dg/request`);
-            if (response.ok) alert("Запрос отправлен");
+            if (response.ok) alert("Запрос в DG успешно отправлен");
         } catch (e) { console.error(e); }
     }
 
@@ -127,47 +142,53 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!fileInput.files[0]) return alert("Выберите файл");
         const file = fileInput.files[0];
         const reader = new FileReader();
-
         reader.onload = async (e) => {
             try {
                 const workbook = XLSX.read(new Uint8Array(e.target.result), { type: 'array' });
                 const jsonData = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
-
-                // Используем Auth.API_BASE
                 const response = await Auth.authFetch(`${Auth.API_BASE}/data/receive`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(jsonData)
                 });
-
                 if (response.ok) {
-                    alert("Загружено!");
+                    alert("Данные загружены!");
                     uploadDialog.close();
                     fileInput.value = "";
                 } else {
-                    alert("Ошибка загрузки");
+                    alert("Ошибка при загрузке данных на сервер");
                 }
             } catch (err) {
-                if (err.message !== "Unauthorized") alert("Ошибка обработки файла");
+                if (err.message !== "Unauthorized") alert("Ошибка обработки Excel-файла");
             }
         };
         reader.readAsArrayBuffer(file);
     }
 
     function exportData() {
-        if (!exportedData?.length) return alert("Нет данных");
+        if (!exportedData?.length) return alert("Нет данных для экспорта. Сначала выполните запрос.");
         const ws = XLSX.utils.json_to_sheet(exportedData);
         const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "Data");
-        XLSX.writeFile(wb, 'export.xlsx');
+        XLSX.utils.book_append_sheet(wb, ws, "BlockedIPs");
+        XLSX.writeFile(wb, 'clickhouse_export.xlsx');
         exportDialog.close();
     }
 
-    // Привязка кнопок
-    document.getElementById("btnCH").addEventListener("click", requestCH);
+    // --- ПРИВЯЗКА СОБЫТИЙ К КНОПКАМ ---
+
+    // Кнопка в сайдбаре теперь открывает диалог фильтров
+    document.getElementById("btnCH").addEventListener("click", () => filterDialog.showModal());
+
+    // Кнопка "Применить" внутри диалога запускает сам запрос
+    btnApplyFilters.addEventListener("click", () => {
+        filterDialog.close();
+        requestCH();
+    });
+
     document.getElementById("btnDG").addEventListener("click", requestDG);
     document.getElementById("btnUpload").addEventListener("click", () => uploadDialog.showModal());
     document.getElementById("btnExport").addEventListener("click", () => exportDialog.showModal());
+
     btnUploadFile.addEventListener("click", uploadFile);
     btnConfirmExport.addEventListener("click", exportData);
 });

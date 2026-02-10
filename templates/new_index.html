@@ -86,6 +86,42 @@
     </div>
 </dialog>
 
+<dialog id="filterDialog" class="modern-dialog">
+    <div class="dialog-content">
+        <h3>Фильтры данных CH</h3>
+
+        <label class="login-field">
+            <span>Дата (blocked_at)</span>
+            <input type="date" id="filterDate">
+        </label>
+
+        <label class="login-field">
+            <span>IP адрес</span>
+            <input type="text" id="filterIP" placeholder="192.168.1.1">
+        </label>
+
+        <label class="login-field">
+            <span>Источник (source)</span>
+            <select id="filterSource">
+                <option value="">Все источники</option>
+                <option value="dosgate">dosgate</option>
+                <option value="ipban">ipban</option>
+                <option value="web_interface">web_interface</option>
+            </select>
+        </label>
+
+        <label class="login-field">
+            <span>Профиль</span>
+            <input type="text" id="filterProfile" placeholder="default">
+        </label>
+
+        <div class="dialog-actions">
+            <button class="secondary-button" onclick="this.closest('dialog').close()">Отмена</button>
+            <button class="primary-button" id="btnApplyFilters">Применить</button>
+        </div>
+    </div>
+</dialog>
+
 <script type="module" src="../scripts/script.js"></script>
 
 </body>
