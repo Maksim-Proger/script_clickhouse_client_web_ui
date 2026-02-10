@@ -1,8 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // --- КОНФИГУРАЦИЯ ---
-    const API_BASE = "http://192.168.100.113:8000"; // Убедись, что адрес верный
 
-    // --- ЭЛЕМЕНТЫ ИНТЕРФЕЙСА ---
+    const API_BASE = "http://192.168.100.113:8000";
+
     const loginForm = document.querySelector(".login-form");
     const loginPage = document.querySelector(".login-page");
     const appRoot = document.querySelector(".app");
@@ -10,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const profileBtn = document.getElementById("profileBtn");
     const profileMenu = document.getElementById("profileMenu");
     const btnLogout = document.getElementById("btnLogout");
-    const currentUserSpan = document.getElementById("currentUser"); // Элемент для имени
+    const currentUserSpan = document.getElementById("currentUser");
 
     const uploadDialog = document.getElementById("uploadDialog");
     const exportDialog = document.getElementById("exportDialog");
@@ -18,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const fileInput = document.getElementById("fileInput");
     const btnUploadFile = document.getElementById("btnUploadFile");
-    const btnConfirmExport = document.querySelector("#exportDialog .primary-button"); // Кнопка внутри модалки экспорта
+    const btnConfirmExport = document.querySelector("#exportDialog .primary-button");
 
     // --- СОСТОЯНИЕ ---
     let accessToken = localStorage.getItem("token") || null;
@@ -60,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (response.ok) {
                 const data = await response.json();
                 accessToken = data.access_token;
-                currentLogin = login; // Сохраняем логин
+                currentLogin = login;
 
                 localStorage.setItem("token", accessToken);
                 localStorage.setItem("login", currentLogin);
@@ -220,5 +219,5 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Действия внутри модалок
     btnUploadFile.addEventListener("click", uploadFile);
-    btnConfirmExport.addEventListener("click", exportData); // Привязали экспорт здесь
+    btnConfirmExport.addEventListener("click", exportData);
 });
