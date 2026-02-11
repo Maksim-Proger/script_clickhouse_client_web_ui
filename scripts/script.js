@@ -192,22 +192,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // --- ПРИВЯЗКА СОБЫТИЙ К КНОПКАМ ---
 
-    document.getElementById("btnDG").addEventListener("click", () => dgFilterDialog.showModal());
-    btnApplyDGFilters.addEventListener("click", () => {
-        dgFilterDialog.close();
-        requestDG();
-    });
-
-    // Кнопка в сайдбаре теперь открывает диалог фильтров
+    // Кнопка CH в сайдбаре -> открыть фильтры CH
     document.getElementById("btnCH").addEventListener("click", () => filterDialog.showModal());
 
-    // Кнопка "Применить" внутри диалога запускает сам запрос
+    // Кнопка "Применить" внутри фильтров CH -> выполнить запрос
     btnApplyFilters.addEventListener("click", () => {
         filterDialog.close();
         requestCH();
     });
 
-    document.getElementById("btnDG").addEventListener("click", requestDG);
+    // Кнопка DG в сайдбаре -> открыть параметры DG
+    document.getElementById("btnDG").addEventListener("click", () => dgFilterDialog.showModal());
+
+    // Кнопка "Отправить запрос" внутри параметров DG -> выполнить запрос
+    btnApplyDGFilters.addEventListener("click", () => {
+        dgFilterDialog.close();
+        requestDG();
+    });
+
+    // Остальные кнопки
     document.getElementById("btnUpload").addEventListener("click", () => uploadDialog.showModal());
     document.getElementById("btnExport").addEventListener("click", () => exportDialog.showModal());
 
