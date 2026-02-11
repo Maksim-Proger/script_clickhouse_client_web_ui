@@ -45,8 +45,9 @@ body {
     font-weight: bold;
 }
 
-.login-form { display: flex; flex-direction: column; gap: 15px; }
-.login-field { display: flex; flex-direction: column; gap: 5px; font-size: 14px; }
+.login-form { display: flex; flex-direction: column; gap: 5px; }
+.login-field { display: flex; flex-direction: column; gap: 5px; font-size: 14px; margin-bottom: 10px;}
+.login-field:last-of-type { margin-bottom: 0; }
 .login-field input { padding: 10px; border: 1px solid #cfd6e0; border-radius: 8px; outline: none; }
 .login-button { padding: 12px; background: #4a6cf7; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; }
 
