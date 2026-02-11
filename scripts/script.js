@@ -1,4 +1,3 @@
-// script.js
 import * as Auth from './auth.js';
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -11,6 +10,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const profileMenu = document.getElementById("profileMenu");
     const btnLogout = document.getElementById("btnLogout");
     const currentUserSpan = document.getElementById("currentUser");
+    const dgFilterDialog = document.getElementById("dgFilterDialog");
+    const btnApplyDGFilters = document.getElementById("btnApplyDGFilters");
 
     // Диалоги
     const uploadDialog = document.getElementById("uploadDialog");
@@ -133,8 +134,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
     async function requestDG() {
         try {
-            const response = await Auth.authFetch(`${Auth.API_BASE}/dg/request`);
-            if (response.ok) alert("Запрос в DG успешно отправлен");
+            // Собираем данные из полей
+            const payload = {
+                name: document.getElementById("dgName").value.trim(),
+                data: {
+                    id: document.getElementById("dgId").value.trim(),
+                    value: document.getElementById("dgValue").value.trim(),
+                    type: document.getElementById("dgType").value.trim()
+                }
+            };
+
+            const response = await Auth.authFetch(`${Auth.API_BASE}/dg/request`, {
+                method: "POST", // Меняем на POST для передачи тела
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) alert("Запрос в DG отправлен с параметрами");
         } catch (e) { console.error(e); }
     }
 
@@ -175,6 +191,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // --- ПРИВЯЗКА СОБЫТИЙ К КНОПКАМ ---
+
+    document.getElementById("btnDG").addEventListener("click", () => dgFilterDialog.showModal());
+    btnApplyDGFilters.addEventListener("click", () => {
+        dgFilterDialog.close();
+        requestDG();
+    });
 
     // Кнопка в сайдбаре теперь открывает диалог фильтров
     document.getElementById("btnCH").addEventListener("click", () => filterDialog.showModal());
