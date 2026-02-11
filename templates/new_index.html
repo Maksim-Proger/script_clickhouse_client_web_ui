@@ -125,7 +125,6 @@
 <dialog id="dgFilterDialog" class="modern-dialog">
     <div class="dialog-content">
         <h3>Параметры запроса к DG</h3>
-
         <label class="login-field">
             <span>Name</span>
             <input type="text" id="dgName" value="feed-gen">
@@ -146,7 +145,7 @@
             <input type="text" id="dgType" value="shost">
         </label>
 
-        <div class="dialog-actions">
+        <div class="dialog-actions" style="margin-top: 15px;">
             <button class="secondary-button" onclick="this.closest('dialog').close()">Отмена</button>
             <button class="primary-button" id="btnApplyDGFilters">Отправить запрос</button>
         </div>
