@@ -1,12 +1,8 @@
-// 1. ЭКСПОРТИРУЕМ КОНФИГУРАЦИЮ (чтобы script.js тоже её видел)
 export const API_BASE = "http://192.168.100.113:8000";
 
-// Внутреннее состояние
 let accessToken = localStorage.getItem("token") || null;
 let currentLogin = localStorage.getItem("login") || "User";
 let sessionExpiredCallback = () => console.warn("Session expired handler not set");
-
-// --- PUBLIC METHODS (То, что доступно другим файлам) ---
 
 export function isAuthenticated() {
     return !!accessToken;
@@ -30,7 +26,7 @@ export async function login(login, password) {
     if (response.ok) {
         const data = await response.json();
         accessToken = data.access_token;
-        currentLogin = login; // Сохраняем введенный логин
+        currentLogin = login;
 
         localStorage.setItem("token", accessToken);
         localStorage.setItem("login", currentLogin);
@@ -46,10 +42,6 @@ export function logout() {
     localStorage.removeItem("login");
 }
 
-/**
- * Обертка над fetch.
- * Сама добавляет заголовок и проверяет протухший токен.
- */
 export async function authFetch(url, options = {}) {
     const headers = options.headers || {};
 
@@ -66,7 +58,7 @@ export async function authFetch(url, options = {}) {
 
     if (response.status === 401) {
         logout();
-        sessionExpiredCallback(); // Вызываем функцию "показать экран входа"
+        sessionExpiredCallback();
         throw new Error("Unauthorized");
     }
 

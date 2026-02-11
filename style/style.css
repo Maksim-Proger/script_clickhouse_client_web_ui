@@ -5,7 +5,7 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     height: 100vh;
     background-color: #f3f5f8;
-    overflow: hidden; /* Запрещаем скролл самого экрана */
+    overflow: hidden;
 }
 
 .is-hidden { display: none !important; }
@@ -16,7 +16,6 @@ body {
     width: 100vw;
 }
 
-/* ЛОГИН */
 .login-page {
     height: 100vh;
     display: flex;
@@ -51,7 +50,6 @@ body {
 .login-field input { padding: 10px; border: 1px solid #cfd6e0; border-radius: 8px; outline: none; }
 .login-button { padding: 12px; background: #4a6cf7; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; }
 
-/* САЙДБАР */
 .sidebar {
     width: 260px;
     min-width: 260px;
@@ -74,12 +72,11 @@ body {
 }
 .sidebar button.action:hover { background: #4a6cf7; color: white; }
 
-/* КОНТЕНТ И ПОЛЕ ДАННЫХ */
 .content {
     flex: 1;
     display: flex;
     flex-direction: column;
-    padding: 15px; /* Те самые отступы по 15px */
+    padding: 15px;
     height: 100vh;
 }
 
@@ -88,7 +85,7 @@ body {
     background: #fff;
     border: 1px solid #e2e8f0;
     border-radius: 12px;
-    overflow: auto; /* Скролл только тут */
+    overflow: auto;
     box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
 }
 
@@ -98,12 +95,11 @@ table { width: 100%; border-collapse: collapse; min-width: 600px; }
 th { position: sticky; top: 0; background: #f8fafc; z-index: 10; padding: 12px; border-bottom: 2px solid #e2e8f0; text-align: left; font-size: 13px; color: #64748b; }
 td { padding: 12px; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
 
-/* ДИАЛОГИ (Исправлено) */
 .modern-dialog {
     border: none;
     border-radius: 16px;
     padding: 0;
-    width: fit-content; /* Окно по размеру содержимого */
+    width: fit-content;
     max-width: 90vw;
     box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
 }
@@ -127,10 +123,18 @@ td { padding: 12px; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
 .primary-button { padding: 10px 20px; background: #4a6cf7; color: white; border: none; border-radius: 8px; cursor: pointer; }
 .secondary-button { padding: 10px 20px; background: #f1f5f9; color: #475569; border: none; border-radius: 8px; cursor: pointer; }
 
-/* МЕНЮ ПРОФИЛЯ */
 .profile-menu {
     position: absolute; top: 70px; left: 20px; width: 180px;
     background: #fff; border-radius: 8px; box-shadow: 0 10px 15px rgba(0,0,0,0.1);
     padding: 15px; z-index: 100; border: 1px solid #e2e8f0;
 }
-.logout-button { width: 100%; background: #fee2e2; color: #dc2626; border: none; padding: 8px; border-radius: 6px; cursor: pointer; margin-top: 10px; }
+.logout-button {
+    width: 100%;
+    background: #fee2e2;
+    color: #dc2626;
+    border: none;
+    padding: 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 10px;
+}

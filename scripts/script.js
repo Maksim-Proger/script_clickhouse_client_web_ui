@@ -2,7 +2,6 @@ import * as Auth from './auth.js';
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    // --- ЭЛЕМЕНТЫ UI ---
     const loginForm = document.querySelector(".login-form");
     const loginPage = document.querySelector(".login-page");
     const appRoot = document.querySelector(".app");
@@ -13,22 +12,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const dgFilterDialog = document.getElementById("dgFilterDialog");
     const btnApplyDGFilters = document.getElementById("btnApplyDGFilters");
 
-    // Диалоги
     const uploadDialog = document.getElementById("uploadDialog");
     const exportDialog = document.getElementById("exportDialog");
-    const filterDialog = document.getElementById("filterDialog"); // Новый диалог
+    const filterDialog = document.getElementById("filterDialog");
 
     const container = document.getElementById("data-list");
     const fileInput = document.getElementById("fileInput");
 
-    // Кнопки действий в диалогах
     const btnUploadFile = document.getElementById("btnUploadFile");
     const btnConfirmExport = document.querySelector("#exportDialog .primary-button");
-    const btnApplyFilters = document.getElementById("btnApplyFilters"); // Кнопка в фильтрах
+    const btnApplyFilters = document.getElementById("btnApplyFilters");
 
     let exportedData = [];
 
-    // --- ИНИЦИАЛИЗАЦИЯ ---
     Auth.setSessionExpiredHandler(showLogin);
 
     if (Auth.isAuthenticated()) {
@@ -37,7 +33,6 @@ document.addEventListener("DOMContentLoaded", () => {
         showLogin();
     }
 
-    // --- УПРАВЛЕНИЕ ИНТЕРФЕЙСОМ ---
     function showApp() {
         loginPage.classList.add("is-hidden");
         appRoot.classList.remove("is-hidden");
@@ -50,7 +45,6 @@ document.addEventListener("DOMContentLoaded", () => {
         Auth.logout();
     }
 
-    // --- ОБРАБОТЧИКИ СОБЫТИЙ ---
     loginForm.addEventListener("submit", async (e) => {
         e.preventDefault();
         const login = loginForm.elements["login"].value.trim();
@@ -77,27 +71,21 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     window.addEventListener("click", () => profileMenu.classList.add("is-hidden"));
 
-    // --- БИЗНЕС-ЛОГИКА (ЗАПРОСЫ) ---
-
-    // Функция запроса к ClickHouse с учетом фильтров
     async function requestCH() {
         try {
             container.innerHTML = "<p style='padding:20px'>Загрузка...</p>";
 
-            // 1. Собираем значения из полей фильтрации
             const fDate = document.getElementById("filterDate").value;
             const fIP = document.getElementById("filterIP").value.trim();
             const fSource = document.getElementById("filterSource").value;
             const fProfile = document.getElementById("filterProfile").value.trim();
 
-            // 2. Формируем массив условий для WHERE
             let conditions = [];
             if (fDate) conditions.push(`toDate(blocked_at) = '${fDate}'`);
             if (fIP) conditions.push(`ip_address = '${fIP}'`);
             if (fSource) conditions.push(`source = '${fSource}'`);
             if (fProfile) conditions.push(`profile = '${fProfile}'`);
 
-            // 3. Собираем финальный SQL
             const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : "";
             const sqlQuery = `SELECT * FROM feedgen.blocked_ips ${whereClause} ORDER BY blocked_at DESC LIMIT 500`;
 
@@ -134,7 +122,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     async function requestDG() {
         try {
-            // Собираем данные из полей
             const payload = {
                 name: document.getElementById("dgName").value.trim(),
                 data: {
@@ -145,7 +132,7 @@ document.addEventListener("DOMContentLoaded", () => {
             };
 
             const response = await Auth.authFetch(`${Auth.API_BASE}/dg/request`, {
-                method: "POST", // Меняем на POST для передачи тела
+                method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
             });
@@ -190,27 +177,20 @@ document.addEventListener("DOMContentLoaded", () => {
         exportDialog.close();
     }
 
-    // --- ПРИВЯЗКА СОБЫТИЙ К КНОПКАМ ---
-
-    // Кнопка CH в сайдбаре -> открыть фильтры CH
     document.getElementById("btnCH").addEventListener("click", () => filterDialog.showModal());
 
-    // Кнопка "Применить" внутри фильтров CH -> выполнить запрос
     btnApplyFilters.addEventListener("click", () => {
         filterDialog.close();
         requestCH();
     });
 
-    // Кнопка DG в сайдбаре -> открыть параметры DG
     document.getElementById("btnDG").addEventListener("click", () => dgFilterDialog.showModal());
 
-    // Кнопка "Отправить запрос" внутри параметров DG -> выполнить запрос
     btnApplyDGFilters.addEventListener("click", () => {
         dgFilterDialog.close();
         requestDG();
     });
 
-    // Остальные кнопки
     document.getElementById("btnUpload").addEventListener("click", () => uploadDialog.showModal());
     document.getElementById("btnExport").addEventListener("click", () => exportDialog.showModal());
 
